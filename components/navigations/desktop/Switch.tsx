@@ -1,50 +1,26 @@
 "use client"
 
-import React from "react"
-import { Switch } from "@headlessui/react"
+import { FC, useEffect, useState } from "react"
+import { cn } from "@/libs/utils"
+import { Switch as Toggle } from "@headlessui/react"
+import { useTheme } from "next-themes"
 
-import { cn } from "@libs/utils"
-
-export function DarkModeToggle() {
-  const [darkMode, setDarkMode] = React.useState(false)
-  React.useEffect(() => {
-    if (
-      localStorage.theme === "dark" ||
-      (!("theme" in localStorage) &&
-        window.matchMedia("(prefers-color-scheme:dark)").matches)
-    ) {
-      document.documentElement.classList.add("dark")
-      localStorage.theme = "dark"
-      setDarkMode(!darkMode)
-    } else {
-      document.documentElement.classList.remove("dark")
-      localStorage.theme = "light"
-    }
-  }, [])
+const Switch = () => {
+  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+  if (!mounted) return null
 
   const changeTheme = () => {
-    localStorage.theme = darkMode ? "light" : "dark"
-    setDarkMode(!darkMode)
-    if (darkMode) {
-      document.documentElement.classList.remove("dark")
-    } else {
-      document.documentElement.classList.add("dark")
-    }
+    setTheme(theme === "light" ? "dark" : "light")
   }
 
   return (
     <div className="relative flex items-center space-x-4">
-      <Switch
+      <Toggle
         onChange={changeTheme}
-        checked={darkMode ? true : false}
-        className={cn(
-          "relative inline-flex items-center rounded-full py-1.5 px-2 shadow-sm shadow-gray-400/50 transition-colors duration-500 focus:outline-none focus-visible:ring-2",
-          { "bg-neutral-600 focus-visible:ring-orange-500": darkMode },
-          {
-            "bg-white ring-1 ring-gray-200/50 focus-visible:ring-blue-500":
-              !darkMode,
-          }
-        )}
+        checked={theme === "dark" ? true : false}
+        className="relative inline-flex items-center rounded-full bg-gradient-to-t from-gray-100 via-gray-50 to-white px-2 py-1.5 shadow-md shadow-black/5 ring-1 ring-black/10 transition duration-200 hover:bg-gradient-to-tr hover:from-gray-100 hover:via-gray-100 hover:to-gray-50 active:scale-[96%] active:ring-black/20 dark:bg-gradient-to-t dark:from-slate-600 dark:via-slate-700 dark:to-slate-800 dark:ring-white/10 dark:hover:bg-gradient-to-br dark:hover:from-slate-800 dark:hover:via-slate-700 dark:hover:to-slate-600 dark:active:ring-white/20"
       >
         <span className="sr-only">Disable dark mode</span>
         <svg
@@ -53,9 +29,9 @@ export function DarkModeToggle() {
           fill="none"
           aria-hidden="true"
           className={cn(
-            "text-white transition-transform duration-500",
-            { "scale-100": darkMode },
-            { "scale-0": !darkMode }
+            "text-gray-400 transition-transform duration-500",
+            { "scale-100": theme === "dark" },
+            { "scale-0": theme === "light" }
           )}
         >
           <path
@@ -82,8 +58,8 @@ export function DarkModeToggle() {
           aria-hidden="true"
           className={cn(
             "ml-3.5 text-gray-400 transition-transform duration-500",
-            { "scale-0": darkMode },
-            { "scale-100": !darkMode }
+            { "scale-0": theme === "dark" },
+            { "scale-100": theme === "light" }
           )}
         >
           <path
@@ -97,8 +73,8 @@ export function DarkModeToggle() {
         </svg>
         <span
           className={cn(
-            "absolute top-0.5 left-0.5 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm shadow-gray-400/80 transition duration-500",
-            { "translate-x-[2.625rem]": darkMode }
+            "absolute left-0.5 top-0.5 flex h-8 w-8 items-center justify-center rounded-full bg-gray-50 shadow-sm shadow-black/5 ring-1 ring-black/10 transition duration-500 dark:bg-slate-300 dark:shadow-slate-900 dark:ring-black/10",
+            { "translate-x-[2.625rem]": theme === "dark" }
           )}
         >
           <svg
@@ -108,8 +84,8 @@ export function DarkModeToggle() {
             aria-hidden="true"
             className={cn(
               "flex-none text-gray-500 transition duration-300",
-              { "scale-0 opacity-0": darkMode },
-              { "scale-100 opacity-100": !darkMode }
+              { "scale-0 opacity-0": theme === "dark" },
+              { "scale-100 opacity-100": theme === "light" }
             )}
           >
             <path
@@ -134,9 +110,9 @@ export function DarkModeToggle() {
             fill="none"
             aria-hidden="true"
             className={cn(
-              "-ml-6 flex-none text-neutral-600 transition duration-500",
-              { "scale-100 opacity-100": darkMode },
-              { "scale-0 opacity-0": !darkMode }
+              "-ml-6 flex-none text-gray-600 transition duration-500",
+              { "scale-100 opacity-100": theme === "dark" },
+              { "scale-0 opacity-0": theme === "light" }
             )}
           >
             <path
@@ -149,7 +125,9 @@ export function DarkModeToggle() {
             ></path>
           </svg>
         </span>
-      </Switch>
+      </Toggle>
     </div>
   )
 }
+
+export default Switch

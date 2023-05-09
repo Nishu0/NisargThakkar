@@ -1,6 +1,3 @@
 "use client"
-export * from "./DesktopNavigation"
-export * from "./MobileNavigation"
-export * from "./MobileMenuButton"
-export * from "./DarkModeToggle"
-export * from "./Logo"
+export * from "./mobile"
+export * from "./desktop"

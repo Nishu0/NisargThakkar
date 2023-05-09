@@ -4,7 +4,7 @@ import { Inter } from "next/font/google"
 import { siteConfig } from "@/config/site"
 import { Analytics as VercelAnalytics } from "@vercel/analytics/react"
 
-import { Header, TwIndicators } from "@components/index"
+import { TwIndicators } from "@components/index"
 import { absoluteUrl, cn } from "@libs/utils"
 
 interface RootLayoutProps {

@@ -31,6 +31,7 @@
     "framer-motion": "^10.12.8",
     "husky": "^8.0.3",
     "next": "13.4.1",
+    "postcss-100vh-fix": "^1.0.2",
     "postcss-flexbugs-fixes": "5.0.2",
     "postcss-preset-env": "8.3.2",
     "prettier": "^2.8.8",
