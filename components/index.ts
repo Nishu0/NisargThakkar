@@ -1,2 +1,1 @@
-"use client"
-export * from "../app/TwIndicators"
+export { default as Project } from "./project/Project"

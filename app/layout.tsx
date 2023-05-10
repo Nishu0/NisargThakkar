@@ -1,83 +1,185 @@
-import "@styles/tailwind.css"
+import "@/styles/tailwind.css"
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import { siteConfig } from "@/config/site"
+import { Inter as FontSans } from "next/font/google"
+import localFont from "next/font/local"
+import {
+  Container,
+  Footer,
+  Grid,
+  Header,
+  Main,
+  ThemeProvider,
+  TwIndicator,
+  Wrapper,
+} from "@/components/core"
+import { metaData } from "@/config/meta"
+import { absoluteUrl, cn, constructOgImageUri } from "@/libs/utils"
 import { Analytics as VercelAnalytics } from "@vercel/analytics/react"
-
-import { TwIndicators } from "@components/index"
-import { absoluteUrl, cn } from "@libs/utils"
 
 interface RootLayoutProps {
   children: React.ReactNode
 }
 
-const inter = Inter({
+const fontSans = FontSans({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-sans",
+  display: "swap",
+})
+
+const calSans = localFont({
+  src: "../public/fonts/CalSans-SemiBold.woff2",
+  variable: "--font-calsans",
+  display: "swap",
 })
 
 export const metadata: Metadata = {
   title: {
-    default: siteConfig.title,
-    template: `%s | ${siteConfig.title}`,
+    default: metaData.title,
+    template: "%s | Portfolio",
   },
-  description: siteConfig.description,
-  keywords: siteConfig.keywords,
+  generator: metaData.author.name,
+  applicationName: metaData.title,
+  description: metaData.description,
+  referrer: "origin-when-cross-origin",
+  keywords: [
+    "Tim",
+    "Tumur",
+    "Bazarragchaa",
+    "Hayward",
+    "California",
+    "San Francisco",
+    "Bay Area",
+    "Android Developer",
+    "Frontend Developer",
+    "Kotlin",
+    "Typescript",
+    "Android Jetpack",
+    "Jetpack Compose",
+    "Next.js",
+    "Tailwind Css",
+    "React",
+  ],
   authors: [
     {
-      name: "Nisarg Thakkar",
-      url: "http://nisargthakkar.co/",
+      name: metaData.author.name,
+      url: metaData.author.twitterUrl,
     },
   ],
-  creator: "Nisarg",
+  creator: metaData.author.name,
+  publisher: metaData.author.name,
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL(absoluteUrl()),
+  alternates: {
+    canonical: "/",
+    languages: {
+      "en-US": "/en-US",
+      "de-DE": "/de-DE",
+    },
+  },
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+    viewportFit: "cover",
+  },
+  robots: {
+    index: false,
+    follow: true,
+    nocache: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      noimageindex: false,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+
+  icons: {
+    icon: [
+      { url: "/favicons/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicons/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      {
+        url: "/favicons/android-icon-192x192.png",
+        sizes: "192x192",
+        type: "image/png",
+      },
+    ],
+    shortcut: ["/favicons/favicon-32x32.png"],
+    apple: [
+      { url: "/favicons/apple-icon.png" },
+      { url: "/apple-icon-180x180.png", sizes: "180x180", type: "image/png" },
+    ],
+    other: [
+      {
+        rel: "apple-touch-icon-precomposed",
+        url: "/favicons/apple-icon-precomposed.png",
+      },
+    ],
+  },
+
+  manifest: absoluteUrl("/favicons/manifest.json"),
+
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: siteConfig.url,
-    title: siteConfig.title,
-    description: siteConfig.description,
-    siteName: siteConfig.title,
+    url: absoluteUrl(),
+    title: metaData.title,
+    description: metaData.description,
+    siteName: metaData.title,
     images: [
       {
-        url: absoluteUrl("/og.png"),
+        url: constructOgImageUri(metaData.ogTitle, "Home", metaData.tags, "/"),
         width: 1200,
         height: 630,
-        alt: siteConfig.title,
+        alt: metaData.title,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: siteConfig.title,
-    description: siteConfig.description,
-    images: [`${siteConfig.url}/og.png`],
-    creator: "@ItsNisargT",
+    title: metaData.ogTitle,
+    description: metaData.description,
+    images: [constructOgImageUri(metaData.ogTitle, "Home", metaData.tags, "/")],
+    creator: metaData.author.twitterAddress,
   },
-  icons: {
-    icon: "/favicon-16x16.png",
-    shortcut: "/favicon-32x32.png",
-    apple: "/apple-touch-icon.png",
+  appleWebApp: {
+    capable: true,
+    title: metaData.title,
+    statusBarStyle: "black-translucent",
   },
-  manifest: `${siteConfig.url}/site.webmanifest`,
 }
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html
-      lang="en"
-      className={cn(
-        "bg-gray-50 font-sans text-gray-600 antialiased dark:bg-neutral-800 dark:text-white",
-        inter.variable
-      )}
-    >
-      <body className={cn("max-w-7x mx-auto")}>
-      <main className="mx-auto max-w-5xl border border-gray-50 bg-white shadow-sm shadow-gray-800/20 dark:border-neutral-700/40 dark:bg-neutral-900 dark:shadow-neutral-800/20">
-          
-          {children}
-        </main>
-
-        <VercelAnalytics />
-        <TwIndicators />
+    <html lang="en" className="layout" suppressHydrationWarning>
+      <body
+        className={cn(
+          "layout h-full scroll-smooth",
+          fontSans.variable,
+          calSans.variable
+        )}
+        style={{ WebkitTapHighlightColor: "transparent" }}
+      >
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <Wrapper>
+            <Header />
+            <Container>
+              <Grid>
+                <Main>{children}</Main>
+              </Grid>
+            </Container>
+            <Footer />
+            <VercelAnalytics />
+            <TwIndicator />
+          </Wrapper>
+        </ThemeProvider>
       </body>
     </html>
   )
